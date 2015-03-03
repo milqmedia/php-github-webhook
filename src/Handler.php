@@ -81,10 +81,13 @@ class Handler
         if(isset($this->data['ref']) && $this->data['ref'] !== 'refs/heads/master')
         	return false;
 
-        $this->event = $headers['X-GitHub-Event'];
-		$this->delivery = $headers['X-GitHub-Delivery'];
-        return true;
-        
+        if(isset($headers['X-Github-Event']))
+        	$this->event = $headers['X-GitHub-Event'];
+		
+		if(isset($headers['X-GitHub-Delivery']))
+			$this->delivery = $headers['X-GitHub-Delivery'];
+			
+        return true;        
     }
 
     protected function validateSignature($gitHubSignatureHeader, $payload)
