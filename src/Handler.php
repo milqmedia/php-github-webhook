@@ -60,11 +60,7 @@ class Handler
         }
         
         $data = $this->getData();
-     
-        // Only accept pushes to the master branch
-        if(isset($data['ref']) && $data['ref'] !== 'refs/heads/master')
-        	return false;
-
+            
         print shell_exec("/usr/bin/git --git-dir={$this->gitDir}/.git --work-tree={$this->gitDir} pull -f {$this->remote} 2>&1");
 		
         return true;
@@ -75,13 +71,18 @@ class Handler
         $headers = $this->getallheaders();
         $payload = file_get_contents('php://input');
 
-       // if (!$this->validateSignature($headers['X-Hub-Signature'], $payload)) {
-       //     return false;
-       // }
+       	if (!$this->validateSignature($headers['X-Hub-Signature'], $payload)) {
+            return false;
+        }
 
         $this->data = json_decode($payload,true);
-        //$this->event = $headers['X-GitHub-Event'];
-       // $this->delivery = $headers['X-GitHub-Delivery'];
+        
+        // Only accept pushes to the master branch
+        if(isset($this->data['ref']) && $this->data['ref'] !== 'refs/heads/master')
+        	return false;
+
+        $this->event = $headers['X-GitHub-Event'];
+		$this->delivery = $headers['X-GitHub-Delivery'];
         return true;
         
     }
