@@ -66,17 +66,16 @@ class Handler
 
     public function validate()
     {
-	    return true;
         $headers = $this->getallheaders();
         $payload = file_get_contents('php://input');
 
-        if (!$this->validateSignature($headers['X-Hub-Signature'], $payload)) {
-            return false;
-        }
+       // if (!$this->validateSignature($headers['X-Hub-Signature'], $payload)) {
+       //     return false;
+       // }
 
         $this->data = json_decode($payload,true);
-        $this->event = $headers['X-GitHub-Event'];
-        $this->delivery = $headers['X-GitHub-Delivery'];
+        //$this->event = $headers['X-GitHub-Event'];
+       // $this->delivery = $headers['X-GitHub-Delivery'];
         return true;
         
     }
