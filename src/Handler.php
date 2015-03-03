@@ -59,7 +59,7 @@ class Handler
             return false;
         }
 
-        exec("git --work-tree={$this->gitDir} pull -f {$this->remote}", $this->gitOutput);
+        print shell_exec("/usr/bin/git --work-tree={$this->gitDir} pull -f {$this->remote} 2>&1");
 		
         return true;
     }
@@ -78,6 +78,7 @@ class Handler
         $this->event = $headers['X-GitHub-Event'];
         $this->delivery = $headers['X-GitHub-Delivery'];
         return true;
+        
     }
 
     protected function validateSignature($gitHubSignatureHeader, $payload)
