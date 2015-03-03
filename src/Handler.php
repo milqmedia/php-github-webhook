@@ -60,12 +60,14 @@ class Handler
         }
 
         exec("git --work-tree={$this->gitDir} pull -f {$this->remote}", $this->gitOutput);
+		
         return true;
     }
 
     public function validate()
     {
-        $headers = apache_request_headers();
+	    return true;
+        $headers = $this->getallheaders();
         $payload = file_get_contents('php://input');
 
         if (!$this->validateSignature($headers['X-Hub-Signature'], $payload)) {
@@ -84,4 +86,19 @@ class Handler
         $payloadHash = hash_hmac($algo, $payload, $this->secret);
         return ($payloadHash == $gitHubSignature);
     }
+    
+    protected function getallheaders() 
+    { 
+       
+       $headers = ''; 
+       foreach ($_SERVER as $name => $value) 
+       { 
+           if (substr($name, 0, 5) == 'HTTP_') 
+           { 
+               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value; 
+           } 
+       }
+        
+       return $headers; 
+    } 
 }
