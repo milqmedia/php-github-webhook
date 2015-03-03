@@ -58,6 +58,12 @@ class Handler
         if (!$this->validate()) {
             return false;
         }
+        
+        $data = $this->getData();
+     
+        // Only accept pushes to the master branch
+        if(isset($data['ref']) && $data['ref'] !== 'refs/heads/master')
+        	return false;
 
         print shell_exec("/usr/bin/git --git-dir={$this->gitDir}/.git --work-tree={$this->gitDir} pull -f {$this->remote} 2>&1");
 		
