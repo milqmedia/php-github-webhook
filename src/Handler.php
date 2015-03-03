@@ -59,7 +59,7 @@ class Handler
             return false;
         }
 
-        print shell_exec("/usr/bin/git --work-tree={$this->gitDir} pull -f {$this->remote} 2>&1");
+        print shell_exec("/usr/bin/git --git-dir={$this->gitDir}/.git --work-tree={$this->gitDir} pull -f {$this->remote} 2>&1");
 		
         return true;
     }
